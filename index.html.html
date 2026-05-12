@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionário Matriz GUT — Avaliação de Processos</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F8F6F1;
+    --surface: #FFFFFF;
+    --border: #E2DDD5;
+    --border-strong: #C8C2B8;
+    --text: #1C1A17;
+    --text-muted: #6B6660;
+    --text-hint: #A09B94;
+    --accent: #2D6A4F;
+    --accent-light: #E8F5EE;
+    --accent-mid: #52B788;
+    --warning: #B5451B;
+    --warning-light: #FDF0EB;
+    --info: #1B4F8A;
+    --info-light: #EBF2FA;
+    --gut-g: #1B6CA8;
+    --gut-u: #6B2D8E;
+    --gut-t: #C0392B;
+    --score-high: #C0392B;
+    --score-mid: #E67E22;
+    --score-low: #27AE60;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-icon svg { width: 20px; height: 20px; fill: white; }
+
+  .logo-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--text);
+  }
+
+  .logo-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    padding: 4px;
+    border-radius: var(--radius-sm);
+  }
+
+  .nav-tab {
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+
+  .nav-tab.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+  }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ---- FORM ---- */
+  .page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .page-sub {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 2.5rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .step-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    flex-shrink: 0;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input[type="text"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--accent-mid);
+    background: var(--surface);
+  }
+
+  textarea { resize: vertical; min-height: 90px; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .field { margin-bottom: 1.25rem; }
+  .field:last-child { margin-bottom: 0; }
+
+  /* Process card */
+  .process-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    background: var(--bg);
+  }
+
+  .process-card:last-child { margin-bottom: 0; }
+
+  .process-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .process-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .process-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  /* GUT matrix */
+  .gut-matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .gut-col {
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+  }
+
+  .gut-g { background: #EBF4FB; border: 1px solid #B5D4EF; }
+  .gut-u { background: #F5EEF8; border: 1px solid #D7B8E8; }
+  .gut-t { background: #FDEDEC; border: 1px solid #F5B7B1; }
+
+  .gut-header {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .gut-g .gut-header { color: var(--gut-g); }
+  .gut-u .gut-header { color: var(--gut-u); }
+  .gut-t .gut-header { color: var(--gut-t); }
+
+  .gut-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .gut-options { display: flex; flex-direction: column; gap: 6px; }
+
+  .gut-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    background: rgba(255,255,255,0.5);
+  }
+
+  .gut-option:hover { border-color: var(--border-strong); background: white; }
+  .gut-option.selected { background: white; }
+  .gut-g .gut-option.selected { border-color: var(--gut-g); }
+  .gut-u .gut-option.selected { border-color: var(--gut-u); }
+  .gut-t .gut-option.selected { border-color: var(--gut-t); }
+
+  .gut-option input[type="radio"] {
+    width: auto;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+  }
+
+  .gut-option-text {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .gut-option-score {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .score-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .score-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  .score-high { color: var(--score-high); }
+  .score-mid { color: var(--score-mid); }
+  .score-low { color: var(--score-low); }
+
+  .add-process-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 1rem;
+  }
+
+  .add-process-btn:hover {
+    border-color: var(--accent-mid);
+    color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .remove-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-hint);
+    font-size: 18px;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color 0.15s;
+  }
+
+  .remove-btn:hover { color: var(--warning); }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 0.5rem;
+  }
+
+  .submit-btn:hover { background: #1E5C3F; }
+  .submit-btn:disabled { background: var(--border-strong); cursor: not-allowed; }
+
+  /* ---- RELATÓRIO ---- */
+  .report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .report-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .btn-outline {
+    padding: 8px 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+
+  .btn-outline:hover { border-color: var(--accent-mid); color: var(--accent); }
+
+  .btn-primary {
+    padding: 8px 16px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    color: white;
+    transition: all 0.15s;
+  }
+
+  .btn-primary:hover { background: #1E5C3F; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--text);
+  }
+
+  .response-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+
+  .response-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .response-who {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+  }
+
+  .response-area {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .response-date {
+    font-size: 12px;
+    color: var(--text-hint);
+    background: var(--bg);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .process-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .process-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  .process-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .process-table tr:last-child td { border-bottom: none; }
+
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 28px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .score-badge.high { background: #FDEDEC; color: var(--score-high); }
+  .score-badge.mid { background: #FDF3E7; color: var(--score-mid); }
+  .score-badge.low { background: #E9F7EF; color: var(--score-low); }
+
+  .priority-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .priority-bar-fill {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .priority-bar-inner {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  .bar-high { background: var(--score-high); }
+  .bar-mid { background: var(--score-mid); }
+  .bar-low { background: var(--score-low); }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+
+  .empty-state svg {
+    width: 64px;
+    height: 64px;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+  }
+
+  .empty-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--text);
+    opacity: 0.6;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-bar input[type="text"],
+  .filter-bar select {
+    width: auto;
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .filter-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  .success-toast {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--accent);
+    color: white;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+
+  .gut-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .gut-legend span { display: flex; align-items: center; gap: 4px; }
+  .gut-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  @media print {
+    .header, .nav-tabs, .filter-bar, .report-actions, .btn-outline, .btn-primary { display: none !important; }
+    .view { display: block !important; }
+    #view-form { display: none !important; }
+    .card, .response-card { break-inside: avoid; }
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 1.5rem 1rem; }
+    .gut-matrix { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+    .header { padding: 1rem; }
+    .header-inner { flex-direction: column; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-6 9l2 2 4-4"/></svg>
+      </div>
+      <div>
+        <div class="logo-text">Matriz GUT</div>
+        <div class="logo-sub">Avaliação de Processos</div>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchView('form')">Questionário</button>
+      <button class="nav-tab" onclick="switchView('report')">Relatório</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- FORMULÁRIO -->
+  <div id="view-form" class="view active">
+    <div class="page-title">Avaliação de Processos Críticos</div>
+    <p class="page-sub">Identifique sua área e avalie cada processo crítico usando a Matriz GUT (Gravidade, Urgência e Tendência).</p>
+
+    <div class="card">
+      <div class="card-title"><span class="step-badge">1</span> Identificação da Liderança</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Nome da Liderança *</label>
+          <input type="text" id="f-nome" placeholder="Seu nome completo">
+        </div>
+        <div class="field">
+          <label>Cargo / Função *</label>
+          <input type="text" id="f-cargo" placeholder="Ex: Gerente, Coordenador...">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Área / Departamento *</label>
+          <input type="text" id="f-area" placeholder="Ex: Produção, Financeiro, RH...">
+        </div>
+        <div class="field">
+          <label>Data</label>
+          <input type="text" id="f-data" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="step-badge">2</span> Processos Críticos + Matriz GUT</div>
+
+      <div class="gut-legend">
+        <span><span class="gut-dot" style="background:#1B6CA8"></span> G — Gravidade: impacto se o problema não for resolvido</span>
+        <span><span class="gut-dot" style="background:#6B2D8E"></span> U — Urgência: tempo disponível para resolução</span>
+        <span><span class="gut-dot" style="background:#C0392B"></span> T — Tendência: comportamento do problema sem ação</span>
+      </div>
+
+      <div id="processes-container"></div>
+
+      <button class="add-process-btn" onclick="addProcess()" id="add-btn">
+        + Adicionar processo crítico
+      </button>
+    </div>
+
+    <div class="card" style="padding: 1.25rem 1.75rem;">
+      <button class="submit-btn" onclick="submitForm()" id="submit-btn">Enviar Avaliação</button>
+      <p style="text-align:center; font-size:12px; color:var(--text-hint); margin-top:10px;">
+        Os dados são salvos localmente neste dispositivo. Exporte o relatório em CSV ou PDF quando necessário.
+      </p>
+    </div>
+  </div>
+
+  <!-- RELATÓRIO -->
+  <div id="view-report" class="view">
+    <div class="report-header">
+      <div>
+        <div class="page-title">Relatório de Avaliações</div>
+        <p class="page-sub" id="report-subtitle">Visão consolidada de todos os questionários.</p>
+      </div>
+      <div class="report-actions">
+        <button class="btn-outline" onclick="exportCSV()">⬇ Exportar CSV</button>
+        <button class="btn-outline" onclick="window.print()">🖨 Imprimir</button>
+        <button class="btn-primary" onclick="clearAll()" style="background:#B5451B; border-color:#B5451B;">Limpar tudo</button>
+      </div>
+    </div>
+
+    <div class="stat-grid" id="stat-grid"></div>
+
+    <div class="filter-bar">
+      <label class="filter-label">Filtrar:</label>
+      <input type="text" id="filter-text" placeholder="Nome ou área..." oninput="renderReport()" style="min-width:180px">
+      <select id="filter-priority" onchange="renderReport()">
+        <option value="">Todas as prioridades</option>
+        <option value="alta">Alta (score ≥ 50)</option>
+        <option value="media">Média (25–49)</option>
+        <option value="baixa">Baixa (&lt; 25)</option>
+      </select>
+      <select id="sort-by" onchange="renderReport()">
+        <option value="date-desc">Mais recentes</option>
+        <option value="date-asc">Mais antigos</option>
+        <option value="score-desc">Maior score</option>
+      </select>
+    </div>
+
+    <div id="report-list"></div>
+  </div>
+
+</div>
+
+<div class="success-toast" id="toast">✓ Avaliação enviada com sucesso!</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// =====================================================
+//  CONFIGURE AQUI AS SUAS CREDENCIAIS DO SUPABASE
+// =====================================================
+const SUPABASE_URL  = 'https://zfspwhuilevrbdzirhnp.supabase.co/rest/v1/';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmc3B3aHVpbGV2cmJkemlyaG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1OTY4ODMsImV4cCI6MjA5NDE3Mjg4M30.mBsEyGdluTVYmqs50De8UPS9OYobVJUzRUYT-oodDP4';
+// =====================================================
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let responses = [];
+
+const GUT_OPTIONS = {
+  G: [
+    { score: 5, text: "Extremamente grave — afeta toda a organização" },
+    { score: 4, text: "Muito grave — grandes prejuízos" },
+    { score: 3, text: "Grave — danos moderados" },
+    { score: 2, text: "Pouco grave — pequenos prejuízos" },
+    { score: 1, text: "Sem gravidade — sem prejuízos" }
+  ],
+  U: [
+    { score: 5, text: "Ação imediata necessária" },
+    { score: 4, text: "Muito urgente — poucos dias" },
+    { score: 3, text: "Urgente — algumas semanas" },
+    { score: 2, text: "Pouco urgente — pode esperar meses" },
+    { score: 1, text: "Sem urgência — pode aguardar" }
+  ],
+  T: [
+    { score: 5, text: "Piora muito rapidamente" },
+    { score: 4, text: "Vai piorar em curto prazo" },
+    { score: 3, text: "Vai piorar em médio prazo" },
+    { score: 2, text: "Vai piorar em longo prazo" },
+    { score: 1, text: "Não vai mudar / vai melhorar" }
+  ]
+};
+
+let processCount = 0;
+let responses = JSON.parse(localStorage.getItem('gut-responses') || '[]');
+
+function switchView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  event.target.classList.add('active');
+  if (v === 'report') loadAndRenderReport();
+}
+
+function addProcess() {
+  const container = document.getElementById('processes-container');
+  const idx = processCount++;
+  const max = 10;
+
+  const div = document.createElement('div');
+  div.className = 'process-card';
+  div.id = 'proc-' + idx;
+
+  const canRemove = idx >= 3;
+
+  div.innerHTML = `
+    <div class="process-header">
+      <div class="process-num">${idx + 1}</div>
+      <div class="process-label">Processo Crítico ${idx + 1}</div>
+      ${canRemove ? `<button class="remove-btn" onclick="removeProcess(${idx})" title="Remover">×</button>` : ''}
+    </div>
+    <div class="field">
+      <label>Nome do processo *</label>
+      <input type="text" id="proc-name-${idx}" placeholder="Ex: Controle de qualidade, Integração de funcionários...">
+    </div>
+    <div class="field">
+      <label>Descrição / contexto do problema</label>
+      <textarea id="proc-desc-${idx}" placeholder="Descreva brevemente o processo e o problema identificado..."></textarea>
+    </div>
+    <div class="gut-matrix">
+      ${buildGUTCol(idx, 'G')}
+      ${buildGUTCol(idx, 'U')}
+      ${buildGUTCol(idx, 'T')}
+    </div>
+    <div class="score-preview" id="score-${idx}" style="margin-top:12px">
+      <span style="font-size:13px; color:var(--text-muted)">Score GUT:</span>
+      <span class="score-value" id="score-val-${idx}">—</span>
+      <span style="font-size:12px; color:var(--text-hint)" id="score-lbl-${idx}"></span>
+    </div>
+  `;
+
+  container.appendChild(div);
+  checkAddBtn();
+}
+
+function buildGUTCol(idx, dim) {
+  const cls = { G: 'gut-g', U: 'gut-u', T: 'gut-t' }[dim];
+  const title = { G: 'G — Gravidade', U: 'U — Urgência', T: 'T — Tendência' }[dim];
+  const desc = {
+    G: 'Qual o impacto do problema?',
+    U: 'Qual a urgência de resolução?',
+    T: 'Como o problema evolui sem ação?'
+  }[dim];
+
+  const opts = GUT_OPTIONS[dim].map(o => `
+    <label class="gut-option" id="lbl-${idx}-${dim}-${o.score}">
+      <input type="radio" name="gut-${idx}-${dim}" value="${o.score}" onchange="updateScore(${idx})">
+      <span class="gut-option-text">${o.text}</span>
+      <span class="gut-option-score">${o.score}</span>
+    </label>
+  `).join('');
+
+  return `
+    <div class="gut-col ${cls}">
+      <div class="gut-header">${title}</div>
+      <div class="gut-desc">${desc}</div>
+      <div class="gut-options">${opts}</div>
+    </div>
+  `;
+}
+
+function updateScore(idx) {
+  ['G','U','T'].forEach(dim => {
+    document.querySelectorAll(`[name="gut-${idx}-${dim}"]`).forEach(r => {
+      const lbl = document.getElementById(`lbl-${idx}-${dim}-${r.value}`);
+      if (lbl) lbl.classList.toggle('selected', r.checked);
+    });
+  });
+
+  const g = getGUTValue(idx, 'G');
+  const u = getGUTValue(idx, 'U');
+  const t = getGUTValue(idx, 'T');
+
+  const scoreEl = document.getElementById('score-val-' + idx);
+  const lblEl = document.getElementById('score-lbl-' + idx);
+
+  if (g && u && t) {
+    const score = g * u * t;
+    scoreEl.textContent = score;
+    scoreEl.className = 'score-value ' + scoreClass(score);
+
+    if (score >= 50) lblEl.textContent = '🔴 Alta prioridade';
+    else if (score >= 25) lblEl.textContent = '🟠 Média prioridade';
+    else lblEl.textContent = '🟢 Baixa prioridade';
+  } else {
+    scoreEl.textContent = '—';
+    scoreEl.className = 'score-value';
+    lblEl.textContent = '';
+  }
+}
+
+function getGUTValue(idx, dim) {
+  const el = document.querySelector(`[name="gut-${idx}-${dim}"]:checked`);
+  return el ? parseInt(el.value) : null;
+}
+
+function scoreClass(s) {
+  if (s >= 50) return 'score-high';
+  if (s >= 25) return 'score-mid';
+  return 'score-low';
+}
+
+function removeProcess(idx) {
+  const el = document.getElementById('proc-' + idx);
+  if (el) el.remove();
+  checkAddBtn();
+}
+
+function checkAddBtn() {
+  const count = document.querySelectorAll('.process-card').length;
+  document.getElementById('add-btn').style.display = count >= 10 ? 'none' : 'block';
+}
+
+async function submitForm() {
+  if (!configOk()) return;
+  const nome = document.getElementById('f-nome').value.trim();
+  const cargo = document.getElementById('f-cargo').value.trim();
+  const area = document.getElementById('f-area').value.trim();
+
+  if (!nome || !area) {
+    alert('Por favor, preencha seu nome e área.');
+    return;
+  }
+
+  const processCards = document.querySelectorAll('.process-card');
+  if (processCards.length < 3) {
+    alert('É necessário descrever no mínimo 3 processos críticos.');
+    return;
+  }
+
+  const processes = [];
+  let valid = true;
+
+  processCards.forEach((card, i) => {
+    const id = card.id.replace('proc-', '');
+    const name = document.getElementById('proc-name-' + id)?.value.trim();
+    const desc = document.getElementById('proc-desc-' + id)?.value.trim();
+    const g = getGUTValue(id, 'G');
+    const u = getGUTValue(id, 'U');
+    const t = getGUTValue(id, 'T');
+
+    if (!name) { alert(`Preencha o nome do Processo ${i + 1}.`); valid = false; return; }
+    if (!g || !u || !t) { alert(`Avalie todos os critérios GUT do Processo ${i + 1}.`); valid = false; return; }
+
+    processes.push({ name, desc, g, u, t, score: g * u * t });
+  });
+
+  if (!valid) return;
+
+  processes.sort((a, b) => b.score - a.score);
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const { error } = await sb.from('avaliacoes').insert({
+    nome, cargo, area,
+    processos: processes
+  });
+
+  btn.disabled = false;
+  btn.textContent = 'Enviar Avaliação';
+
+  if (error) {
+    alert('Erro ao salvar: ' + error.message);
+    return;
+  }
+
+  showToast();
+  resetForm();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+function resetForm() {
+  document.getElementById('f-nome').value = '';
+  document.getElementById('f-cargo').value = '';
+  document.getElementById('f-area').value = '';
+  document.getElementById('processes-container').innerHTML = '';
+  processCount = 0;
+  for (let i = 0; i < 3; i++) addProcess();
+}
+
+async function loadAndRenderReport() {
+  if (!configOk()) return;
+  const list = document.getElementById('report-list');
+  list.innerHTML = '<p style="color:var(--text-muted);padding:2rem 0">Carregando...</p>';
+
+  const { data, error } = await sb
+    .from('avaliacoes')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    list.innerHTML = `<p style="color:var(--score-high);padding:1rem">Erro ao carregar dados: ${error.message}</p>`;
+    return;
+  }
+
+  responses = (data || []).map(r => ({
+    id: r.id,
+    date: r.created_at,
+    nome: r.nome,
+    cargo: r.cargo,
+    area: r.area,
+    processes: r.processos
+  }));
+
+  renderReport();
+}
+
+function renderReport() {
+  const list = document.getElementById('report-list');
+  const filterText = document.getElementById('filter-text').value.toLowerCase();
+  const filterPriority = document.getElementById('filter-priority').value;
+  const sortBy = document.getElementById('sort-by').value;
+
+  let data = [...responses];
+
+  if (filterText) {
+    data = data.filter(r =>
+      r.nome.toLowerCase().includes(filterText) ||
+      r.area.toLowerCase().includes(filterText)
+    );
+  }
+
+  if (filterPriority) {
+    data = data.filter(r => {
+      const maxScore = Math.max(...r.processes.map(p => p.score));
+      if (filterPriority === 'alta') return maxScore >= 50;
+      if (filterPriority === 'media') return maxScore >= 25 && maxScore < 50;
+      if (filterPriority === 'baixa') return maxScore < 25;
+    });
+  }
+
+  if (sortBy === 'date-asc') data.sort((a,b) => new Date(a.date) - new Date(b.date));
+  else if (sortBy === 'date-desc') data.sort((a,b) => new Date(b.date) - new Date(a.date));
+  else if (sortBy === 'score-desc') {
+    data.sort((a,b) => Math.max(...b.processes.map(p=>p.score)) - Math.max(...a.processes.map(p=>p.score)));
+  }
+
+  renderStats(data);
+
+  if (data.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/>
+        </svg>
+        <div class="empty-title">Nenhuma resposta encontrada</div>
+        <p style="font-size:14px">Preencha o questionário ou ajuste os filtros.</p>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = data.map(r => {
+    const date = new Date(r.date);
+    const dateStr = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+
+    const rows = r.processes.map(p => {
+      const badgeCls = p.score >= 50 ? 'high' : p.score >= 25 ? 'mid' : 'low';
+      const pct = Math.min(100, Math.round((p.score / 125) * 100));
+      const barCls = p.score >= 50 ? 'bar-high' : p.score >= 25 ? 'bar-mid' : 'bar-low';
+      return `
+        <tr>
+          <td style="font-weight:500; font-size:13px">${p.name}</td>
+          <td style="font-size:12px; color:var(--text-muted); max-width:200px">${p.desc || '—'}</td>
+          <td style="text-align:center"><span style="font-size:13px; color:var(--gut-g); font-weight:600">${p.g}</span></td>
+          <td style="text-align:center"><span style="font-size:13px; color:var(--gut-u); font-weight:600">${p.u}</span></td>
+          <td style="text-align:center"><span style="font-size:13px; color:var(--gut-t); font-weight:600">${p.t}</span></td>
+          <td>
+            <div class="priority-bar">
+              <span class="score-badge ${badgeCls}">${p.score}</span>
+              <div class="priority-bar-fill">
+                <div class="priority-bar-inner ${barCls}" style="width:${pct}%"></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    return `
+      <div class="response-card">
+        <div class="response-meta">
+          <div>
+            <div class="response-who">${r.nome}</div>
+            <div class="response-area">${r.cargo ? r.cargo + ' · ' : ''}${r.area}</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="response-date">${dateStr}</span>
+            <button class="btn-outline" style="font-size:12px;padding:5px 10px" onclick="deleteResponse(${r.id})">🗑 Remover</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="process-table">
+            <thead>
+              <tr>
+                <th style="min-width:150px">Processo</th>
+                <th style="min-width:180px">Descrição</th>
+                <th style="text-align:center;min-width:40px">G</th>
+                <th style="text-align:center;min-width:40px">U</th>
+                <th style="text-align:center;min-width:40px">T</th>
+                <th style="min-width:140px">Score GUT (G×U×T)</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStats(data) {
+  const grid = document.getElementById('stat-grid');
+  if (data.length === 0) { grid.innerHTML = ''; return; }
+
+  const allScores = data.flatMap(r => r.processes.map(p => p.score));
+  const allProcesses = data.reduce((sum,r) => sum + r.processes.length, 0);
+  const highPriority = allScores.filter(s => s >= 50).length;
+  const maxScore = Math.max(...allScores);
+
+  grid.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Respostas</div>
+      <div class="stat-value">${data.length}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Processos avaliados</div>
+      <div class="stat-value">${allProcesses}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Alta prioridade</div>
+      <div class="stat-value" style="color:var(--score-high)">${highPriority}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Maior score GUT</div>
+      <div class="stat-value" style="color:var(--score-high)">${maxScore}</div>
+    </div>
+  `;
+}
+
+async function deleteResponse(id) {
+  if (!confirm('Remover esta resposta?')) return;
+  const { error } = await sb.from('avaliacoes').delete().eq('id', id);
+  if (error) { alert('Erro ao remover: ' + error.message); return; }
+  responses = responses.filter(r => r.id !== id);
+  renderReport();
+}
+
+async function clearAll() {
+  if (!confirm('Apagar TODAS as respostas? Esta ação não pode ser desfeita.')) return;
+  const { error } = await sb.from('avaliacoes').delete().neq('id', 0);
+  if (error) { alert('Erro: ' + error.message); return; }
+  responses = [];
+  renderReport();
+}
+
+function exportCSV() {
+  if (responses.length === 0) { alert('Não há dados para exportar.'); return; }
+
+  const header = ['Liderança','Cargo','Área','Data','Processo','Descrição','G','U','T','Score GUT','Prioridade'];
+  const rows = [];
+
+  responses.forEach(r => {
+    const date = new Date(r.date).toLocaleDateString('pt-BR');
+    r.processes.forEach(p => {
+      const prio = p.score >= 50 ? 'Alta' : p.score >= 25 ? 'Média' : 'Baixa';
+      rows.push([r.nome, r.cargo, r.area, date, p.name, p.desc || '', p.g, p.u, p.t, p.score, prio]);
+    });
+  });
+
+  const csv = [header, ...rows].map(row =>
+    row.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')
+  ).join('\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'avaliacoes-gut-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function configOk() {
+  if (SUPABASE_URL.includes('https://zfspwhuilevrbdzirhnp.supabase.co/rest/v1/') || SUPABASE_KEY.includes('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmc3B3aHVpbGV2cmJkemlyaG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1OTY4ODMsImV4cCI6MjA5NDE3Mjg4M30.mBsEyGdluTVYmqs50De8UPS9OYobVJUzRUYT-oodDP4')) {
+    alert('⚠️ Configure as credenciais do Supabase no início do arquivo HTML antes de usar.');
+    return false;
+  }
+  return true;
+}
+
+// Init
+document.getElementById('f-data').value = new Date().toLocaleDateString('pt-BR');
+for (let i = 0; i < 3; i++) addProcess();
+</script>
+</body>
+</html>
