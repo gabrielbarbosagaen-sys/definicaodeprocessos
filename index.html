@@ -785,7 +785,7 @@
 // =====================================================
 //  CONFIGURE AQUI AS SUAS CREDENCIAIS DO SUPABASE
 // =====================================================
-const SUPABASE_URL  = 'https://zfspwhuilevrbdzirhnp.supabase.co/rest/v1/';
+const SUPABASE_URL  = 'https://zfspwhuilevrbdzirhnp.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmc3B3aHVpbGV2cmJkemlyaG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1OTY4ODMsImV4cCI6MjA5NDE3Mjg4M30.mBsEyGdluTVYmqs50De8UPS9OYobVJUzRUYT-oodDP4';
 // =====================================================
 
@@ -1223,7 +1223,7 @@ function exportCSV() {
 }
 
 function configOk() {
-  if (SUPABASE_URL.includes('https://zfspwhuilevrbdzirhnp.supabase.co/rest/v1/') || SUPABASE_KEY.includes('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmc3B3aHVpbGV2cmJkemlyaG5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1OTY4ODMsImV4cCI6MjA5NDE3Mjg4M30.mBsEyGdluTVYmqs50De8UPS9OYobVJUzRUYT-oodDP4')) {
+  if (!SUPABASE_URL || !SUPABASE_KEY || SUPABASE_URL.includes('COLE_AQUI') || SUPABASE_KEY.includes('COLE_AQUI')) {
     alert('⚠️ Configure as credenciais do Supabase no início do arquivo HTML antes de usar.');
     return false;
   }
