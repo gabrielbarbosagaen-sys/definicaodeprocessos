@@ -650,6 +650,60 @@
   .gut-legend span { display: flex; align-items: center; gap: 4px; }
   .gut-dot { width: 8px; height: 8px; border-radius: 50%; }
 
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    text-align: center;
+  }
+  .modal-icon {
+    width: 48px; height: 48px;
+    background: var(--accent-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1rem;
+  }
+  .modal-icon svg { width: 24px; height: 24px; stroke: var(--accent); fill: none; stroke-width: 2; }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 6px; }
+  .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem; }
+  .modal-input {
+    width: 100%; padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; text-align: center;
+    letter-spacing: 0.2em; font-weight: 600;
+    outline: none; background: var(--bg);
+    transition: border-color 0.15s;
+    margin-bottom: 8px;
+  }
+  .modal-input:focus { border-color: var(--accent-mid); background: var(--surface); }
+  .modal-input.error { border-color: var(--warning); }
+  .modal-error { font-size: 12px; color: var(--warning); margin-bottom: 10px; min-height: 16px; }
+  .modal-btn {
+    width: 100%; padding: 11px;
+    background: var(--accent); color: white;
+    border: none; border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .modal-btn:hover { background: #1E5C3F; }
+
   @media print {
     .header, .nav-tabs, .filter-bar, .report-actions, .btn-outline, .btn-primary { display: none !important; }
     .view { display: block !important; }
@@ -778,6 +832,20 @@
 
 </div>
 
+<div class="modal-overlay" id="modal-senha">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="modal-title">Área restrita</div>
+    <div class="modal-sub">Digite a senha para acessar o relatório</div>
+    <input class="modal-input" type="password" id="input-senha" placeholder="••••••" maxlength="20"
+      onkeydown="if(event.key==='Enter') verificarSenha()">
+    <div class="modal-error" id="modal-erro"></div>
+    <button class="modal-btn" onclick="verificarSenha()">Entrar</button>
+  </div>
+</div>
+
 <div class="success-toast" id="toast">✓ Avaliação enviada com sucesso!</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -818,12 +886,42 @@ const GUT_OPTIONS = {
 
 let processCount = 0;
 
+const SENHA_RELATORIO = '14993';
+let relatorioLiberado = false;
+
 function switchView(v) {
+  if (v === 'report' && !relatorioLiberado) {
+    document.getElementById('modal-senha').classList.add('active');
+    document.getElementById('input-senha').value = '';
+    document.getElementById('modal-erro').textContent = '';
+    document.getElementById('input-senha').classList.remove('error');
+    setTimeout(() => document.getElementById('input-senha').focus(), 100);
+    return;
+  }
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
-  event.target.classList.add('active');
+  document.querySelector(`.nav-tab[onclick="switchView('${v}')"]`).classList.add('active');
   if (v === 'report') loadAndRenderReport();
+}
+
+function verificarSenha() {
+  const input = document.getElementById('input-senha');
+  const erro = document.getElementById('modal-erro');
+  if (input.value === SENHA_RELATORIO) {
+    relatorioLiberado = true;
+    document.getElementById('modal-senha').classList.remove('active');
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('view-report').classList.add('active');
+    document.querySelector(`.nav-tab[onclick="switchView('report')"]`).classList.add('active');
+    loadAndRenderReport();
+  } else {
+    input.classList.add('error');
+    erro.textContent = 'Senha incorreta. Tente novamente.';
+    input.value = '';
+    setTimeout(() => { input.classList.remove('error'); }, 1500);
+  }
 }
 
 function addProcess() {
